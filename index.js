@@ -109,6 +109,17 @@ app.put('/inventory/:id/photo', upload.single('photo'), (req, res) => {
 	return res.status(201).json({ message: 'photo updated successfully' });
 });
 
+app.delete('/inventory/:id', (req, res) => {
+	const itemId = parseInt(req.params.id);
+	const originalLength = inventoryList.length;
+	inventoryList = inventoryList.filter(item => item.id !== itemId);
+
+	if (inventoryList.length === originalLength)
+		return res.status(404).json({ error: 'item not found' });
+	
+	return res.status(200).json({ message: 'item deleted successfully' });
+});
+
 app.all('/*all', (req, res) => {
 	res.status(405).json({ error: 'method not allowed' });
 });
