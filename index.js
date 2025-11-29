@@ -31,6 +31,7 @@ let nextId = 1;
 const app = express();
 
 app.use(express.json());
+app.use(express.urlencoded());
 
 app.post('/register', upload.single('photo'), (req, res) => {
 	const { inventory_name, description } = req.body;
@@ -126,6 +127,27 @@ app.get('/RegisterForm.html', (req, res) => {
 
 app.get('/SearchForm.html', (req, res) => {
 	res.sendFile(path.join(__dirname, 'SearchForm.html'));
+});
+
+app.get('/search', (req, res) => {
+	console.log(req.query);
+	const { id, includePhoto } = req.query;
+
+	const itemId = parseInt(id);
+	const hasPhoto = (includePhoto === 'on');
+	const item = inventoryList.find(item => item.id === itemId);
+
+	if (!item)
+		return res.status(404).json({ error: 'item not found' });
+
+	const absolutePath = path.join(__dirname, options.cache, item.photo);
+
+	return res.status(200).json({
+		id: item.id,
+		inventory_name: item.inventory_name,
+		description: item.description,
+		photo: hasPhoto ? absolutePath : null
+	});
 });
 
 app.all('/*all', (req, res) => {
