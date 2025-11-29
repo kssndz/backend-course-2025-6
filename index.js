@@ -29,6 +29,8 @@ let nextId = 1;
 
 const app = express();
 
+app.use(express.json());
+
 app.post('/register', upload.single('photo'), (req, res) => {
 	const { inventory_name, description } = req.body;
 	const photo = req.file;
@@ -63,10 +65,26 @@ app.get('/inventory/:id', (req, res) => {
 	return res.status(200).json({ item });
 });
 
+app.put('/inventory/:id', (req, res) => {
+	const itemId = parseInt(req.params.id);
+	const item = inventoryList.find(item => item.id === itemId);
+
+	if (!item)
+		return res.status(404).json({ error: 'item not found' });
+
+	const { inventory_name, description } = req.body;
+	if (inventory_name)
+		item.inventory_name = inventory_name;
+	if (description)
+		item.description = description;
+
+	return res.status(201).json({ message: 'item updated successfully' });
+});
+
 app.all('/*all', (req, res) => {
 	res.status(405).json({ error: 'method not allowed' });
-})
+});
 
 app.listen(options.port, options.host, () => {
 	console.log(`Server running at ${origin}/`);
-})
+});
