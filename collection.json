@@ -1,0 +1,298 @@
+{
+	"info": {
+		"_postman_id": "207160d0-3085-4704-bf24-515d045ab94a",
+		"name": "lab6",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47538734",
+		"_collection_link": "https://shpakmark-6337116.postman.co/workspace/%D0%90%D0%BD%D0%B3%D0%B5%D0%BB%D1%96%D0%BD%D0%B0-%D0%91%D1%83%D1%85%D0%BD%D0%BE's-Workspace~72771289-8af0-453a-88e3-47d79c9b3c08/collection/47538734-207160d0-3085-4704-bf24-515d045ab94a?action=share&source=collection_link&creator=47538734"
+	},
+	"item": [
+		{
+			"name": "Register item",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "inventory_name",
+							"value": "Pig in Santa hat",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "He's so cool",
+							"type": "text"
+						},
+						{
+							"key": "photo",
+							"type": "file",
+							"src": "postman-cloud:///1f0c1929-06af-4500-9c75-d03781a9c3b6"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseURL}}/register",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List all inventory items",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/inventory",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"inventory"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Show inventory item",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/inventory/1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"inventory",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update item info",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"inventory_name\": \"Pig in christmas hat\",\n    \"description\": \"That was a Christmas hat actually\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/inventory/1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"inventory",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Show inventory item's photo",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "inventory_name",
+							"value": "Pig in Christmas hat",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "That was a Christmas hat actually",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseURL}}/inventory/1/photo",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"inventory",
+						"1",
+						"photo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update photo",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "photo",
+							"type": "file",
+							"src": "postman-cloud:///1f0c2406-9d92-47a0-a4fa-b86ee52af41d"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseURL}}/inventory/1/photo",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"inventory",
+						"1",
+						"photo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete item",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "inventory_name",
+							"value": "Pig in Christmas hat",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "That was a Christmas hat actually",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseURL}}/inventory/1",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"inventory",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "includePhoto",
+							"value": "on",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseURL}}/search?id=1&includePhoto=on",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"search"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						},
+						{
+							"key": "includePhoto",
+							"value": "on"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "inventory_name",
+							"value": "Pig in Santa hat",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "He's so cool",
+							"type": "text"
+						},
+						{
+							"key": "photo",
+							"type": "file",
+							"src": "postman-cloud:///1f0c1929-06af-4500-9c75-d03781a9c3b6"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseURL}}/register",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
