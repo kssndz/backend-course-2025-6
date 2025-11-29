@@ -2,6 +2,7 @@ import { program } from 'commander';
 import fs from 'fs';
 import express from 'express';
 import multer from 'multer';
+import path from 'path';
 
 program
 	.requiredOption('-h, --host <address>', 'host address')
@@ -79,6 +80,21 @@ app.put('/inventory/:id', (req, res) => {
 		item.description = description;
 
 	return res.status(201).json({ message: 'item updated successfully' });
+});
+
+app.get('/inventory/:id/photo', (req, res) => {
+	const itemId = parseInt(req.params.id);
+	const item = inventoryList.find(item => item.id === itemId);
+
+	if (!item || !item.photo)
+		return res.status(404).json({ error: 'photo not found' });
+
+	const absolutePath = path.join(__dirname, options.cache, item.photo);
+
+	res.sendFile(absolutePath, (err) => {
+		if (err)
+			return res.status(404).json({ error: 'photo not found' });
+	});
 });
 
 app.all('/*all', (req, res) => {
