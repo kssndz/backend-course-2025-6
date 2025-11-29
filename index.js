@@ -3,6 +3,8 @@ import fs from 'fs';
 import express from 'express';
 import multer from 'multer';
 import path from 'path';
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 
 program
 	.requiredOption('-h, --host <address>', 'host address')
@@ -30,9 +32,41 @@ let nextId = 1;
 
 const app = express();
 
+const swaggerOptions = swaggerJSDoc({
+	definition: {
+		openapi: '3.0.0',
+		info: {
+			title: 'Inventory Management API',
+			version: '1.0.0',
+			description: 'API for managing inventory items with photo uploads'
+		},
+		servers: [{ url: origin }],
+	},
+	apis: ['./index.js']
+});
+
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerOptions));
 app.use(express.json());
 app.use(express.urlencoded());
 
+/**
+ * @openapi
+ * /register:
+ *   post:
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required: [inventory_name]
+ *             properties:
+ *               inventory_name: {type: string}
+ *               description: {type: string}
+ *               photo: {type: string, format: binary}
+ *     responses:
+ *       201: {description: Success}
+ *       400: {description: Bad request}
+ */
 app.post('/register', upload.single('photo'), (req, res) => {
 	const { inventory_name, description } = req.body;
 	const photo = req.file;
@@ -53,10 +87,30 @@ app.post('/register', upload.single('photo'), (req, res) => {
 	return res.status(201).json({ message: 'item registered successfully '});
 });
 
+/**
+ * @openapi
+ * /inventory:
+ *   get:
+ *     responses:
+ *       200: {description: List of items}
+ */
 app.get('/inventory', (req, res) => {
 	return res.status(200).json({ inventoryList });
 });
 
+/**
+ * @openapi
+ * /inventory/{id}:
+ *   get:
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema: {type: integer}
+ *     responses:
+ *       200: {description: Item details}
+ *       404: {description: Not found}
+ */
 app.get('/inventory/:id', (req, res) => {
 	const itemId = parseInt(req.params.id);
 	const item = inventoryList.find(item => item.id === itemId);
@@ -67,6 +121,26 @@ app.get('/inventory/:id', (req, res) => {
 	return res.status(200).json({ item });
 });
 
+/**
+ * @openapi
+ * /inventory/{id}:
+ *   put:
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema: {type: integer}
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             properties:
+ *               inventory_name: {type: string}
+ *               description: {type: string}
+ *     responses:
+ *       201: {description: Updated}
+ *       404: {description: Not found}
+ */
 app.put('/inventory/:id', (req, res) => {
 	const itemId = parseInt(req.params.id);
 	const item = inventoryList.find(item => item.id === itemId);
@@ -83,6 +157,19 @@ app.put('/inventory/:id', (req, res) => {
 	return res.status(201).json({ message: 'item updated successfully' });
 });
 
+/**
+ * @openapi
+ * /inventory/{id}/photo:
+ *   get:
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema: {type: integer}
+ *     responses:
+ *       200: {description: Photo file}
+ *       404: {description: Not found}
+ */
 app.get('/inventory/:id/photo', (req, res) => {
 	const itemId = parseInt(req.params.id);
 	const item = inventoryList.find(item => item.id === itemId);
@@ -98,6 +185,25 @@ app.get('/inventory/:id/photo', (req, res) => {
 	});
 });
 
+/**
+ * @openapi
+ * /inventory/{id}/photo:
+ *   put:
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema: {type: integer}
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             properties:
+ *               photo: {type: string, format: binary}
+ *     responses:
+ *       201: {description: Updated}
+ *       404: {description: Not found}
+ */
 app.put('/inventory/:id/photo', upload.single('photo'), (req, res) => {
 	const itemId = parseInt(req.params.id);
 	const item = inventoryList.find(item => item.id === itemId);
@@ -110,6 +216,25 @@ app.put('/inventory/:id/photo', upload.single('photo'), (req, res) => {
 	return res.status(201).json({ message: 'photo updated successfully' });
 });
 
+/**
+ * @openapi
+ * /inventory/{id}/photo:
+ *   put:
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema: {type: integer}
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             properties:
+ *               photo: {type: string, format: binary}
+ *     responses:
+ *       201: {description: Updated}
+ *       404: {description: Not found}
+ */
 app.delete('/inventory/:id', (req, res) => {
 	const itemId = parseInt(req.params.id);
 	const originalLength = inventoryList.length;
@@ -129,6 +254,22 @@ app.get('/SearchForm.html', (req, res) => {
 	res.sendFile(path.join(__dirname, 'SearchForm.html'));
 });
 
+/**
+ * @openapi
+ * /search:
+ *   get:
+ *     parameters:
+ *       - name: id
+ *         in: query
+ *         required: true
+ *         schema: {type: integer}
+ *       - name: includePhoto
+ *         in: query
+ *         schema: {type: string}
+ *     responses:
+ *       200: {description: Item found}
+ *       404: {description: Not found}
+ */
 app.get('/search', (req, res) => {
 	console.log(req.query);
 	const { id, includePhoto } = req.query;
