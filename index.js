@@ -120,6 +120,14 @@ app.delete('/inventory/:id', (req, res) => {
 	return res.status(200).json({ message: 'item deleted successfully' });
 });
 
+app.get('/RegisterForm.html', (req, res) => {
+	res.sendFile(path.join(__dirname, 'RegisterForm.html'));
+});
+
+app.get('/SearchForm.html', (req, res) => {
+	res.sendFile(path.join(__dirname, 'SearchForm.html'));
+});
+
 app.all('/*all', (req, res) => {
 	res.status(405).json({ error: 'method not allowed' });
 });
