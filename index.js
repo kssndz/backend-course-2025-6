@@ -97,6 +97,18 @@ app.get('/inventory/:id/photo', (req, res) => {
 	});
 });
 
+app.put('/inventory/:id/photo', upload.single('photo'), (req, res) => {
+	const itemId = parseInt(req.params.id);
+	const item = inventoryList.find(item => item.id === itemId);
+
+	if (!item)
+		return res.status(404).json({ error: 'item not found' });
+
+	item.photo = req.file.filename;
+
+	return res.status(201).json({ message: 'photo updated successfully' });
+});
+
 app.all('/*all', (req, res) => {
 	res.status(405).json({ error: 'method not allowed' });
 });
